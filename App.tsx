@@ -5,15 +5,12 @@ import CustomButton from "./src/component/CustomButton";
 import React, { useState } from "react";
 import AllProduct from "./src/screens/AllProduct";
 
-import Favourites, { Product } from "./src/screens/Favourites";
+import Favourites from "./src/screens/Favourites";
+import { Product } from "./src/component/Types/Type";
 
-type ProductListProps = {
-  allProducts: Product[];
-  favoriteProducts?: Product[];
-  setFavoriteProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
-  setAllProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
-};
-export default function App(props: ProductListProps) {
+export default function App() {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [isProduct, setIsProduct] = useState(true);
 
   const handleProduct = () => {
@@ -47,11 +44,21 @@ export default function App(props: ProductListProps) {
         onPress={() => handleProduct()}
       />
 
-      <AllProduct
-        allProducts={props.allProducts}
-        favoriteProducts={props.favoriteProducts}
-      
-      />
+      {isProduct ? (
+        <AllProduct
+          allProducts={allProducts}
+          setAllProducts={setAllProducts}
+          favoriteProducts={favoriteProducts}
+          setFavoriteProducts={setFavoriteProducts}
+        />
+      ) : (
+        <Favourites
+          allProducts={allProducts}
+          setAllProducts={setAllProducts}
+          favoriteProducts={favoriteProducts}
+          setFavoriteProducts={setFavoriteProducts}
+        />
+      )}
       <StatusBar style="auto" />
     </SafeAreaView>
   );

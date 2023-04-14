@@ -6,31 +6,23 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useProducts from "../Hooks/useProducts";
 import { Metrics } from "../../Metrics";
 import { FontAwesome } from "@expo/vector-icons";
-
-type Product = {
-  id: number;
-  title: string;
-  price: number;
-  brand: string;
-  thumbnail: string;
-};
-
-type ProductListProps = {
-  allProducts: Product[];
-  favoriteProducts?: Product[];
-  setFavoriteProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
-  setAllProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
-};
+import { ProductListProps, Product } from "../component/Types/Type";
+import { Animated } from "react-native";
 
 const AllProduct = (props: ProductListProps) => {
   const { productInfo, products } = useProducts();
   const { favoriteProducts = [], setFavoriteProducts } = props;
+
   const [allProducts, setAllProducts] = useState<Product[]>(productInfo);
-  console.log(productInfo);
+  useEffect(() => {
+    setAllProducts(productInfo);
+  }, [productInfo]);
+
+  console.log(allProducts);
   const isFavorite = (product: Product) => {
     return favoriteProducts.some((fav) => fav.id === product.id);
   };
@@ -43,6 +35,7 @@ const AllProduct = (props: ProductListProps) => {
     if (setFavoriteProducts) {
       setFavoriteProducts(updatedFavorites);
     }
+    console.log(setFavoriteProducts);
   };
 
   return (
@@ -91,6 +84,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   image: {
     position: "absolute",

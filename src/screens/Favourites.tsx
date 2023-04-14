@@ -6,66 +6,62 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useState,useMemo,useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 import { Metrics } from "../../Metrics";
 import { FontAwesome } from "@expo/vector-icons";
+import { all } from "axios";
+import { ProductListProps, Product } from "../component/Types/Type";
 
-export type Product = {
-  id: number;
-  title: string;
-  price: number;
-  brand: string;
-  thumbnail: string;
-};
-type ProductListProps = {
-  favoriteProducts: Product[];
-};
-const ShowFavoriteProducts = (props: ProductListProps) => {
-    const { favoriteProducts } = props;
-    const favoriteIds = useMemo(() => favoriteProducts.map((item) => item.id), [favoriteProducts]);
-  
-    const isFavorite = useCallback((id: number) => favoriteIds.includes(id), [favoriteIds]);
-  
-    return (
-      <View style={styles.container}>
-        <FlatList
-          style={styles.flatList}
-          showsVerticalScrollIndicator={false}
-          data={favoriteProducts}
-          renderItem={({ item }) => (
-            <View style={styles.productContainer}>
-              <TouchableOpacity style={styles.fav} onPress={() => {}}>
-                <FontAwesome name="heart" size={22} color={"#ef233c"} />
-              </TouchableOpacity>
-              <Image style={styles.image} source={{ uri: item.thumbnail }} />
-              <Text style={styles.productTitle}>{item.title}</Text>
-  
-              <Text style={styles.price}>{item.price}</Text>
-              <Text style={styles.priceTitle}> TL</Text>
-              <Text style={styles.brand}>{item.brand}</Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      </View>
-    );
+const Favourites = (props: ProductListProps) => {
+  const { favoriteProducts = [], setFavoriteProducts } = props;
+  const isFavorite = (product: Product) => {
+    return favoriteProducts.some((fav) => fav.id === product.id);
   };
-  
 
-const Favourites = () => {
-  const [fav, setFav] = useState<Product[]>([]);
-  console.log(fav);
-  return <ShowFavoriteProducts favoriteProducts={fav} />;
+  const handleFavoritePress = (product: Product) => {
+    const updatedFavorites = isFavorite(product)
+      ? favoriteProducts.filter((fav) => fav.id !== product.id)
+      : [...favoriteProducts, product];
+
+    if (setFavoriteProducts) {
+      setFavoriteProducts(updatedFavorites);
+    }
+    console.log(setFavoriteProducts);
+  };
+
+  return (
+    <FlatList
+      style={styles.flatList}
+      showsVerticalScrollIndicator={false}
+      data={favoriteProducts}
+      renderItem={({ item }) => (
+        <View style={styles.productContainer}>
+          <TouchableOpacity
+            style={styles.fav}
+            onPress={() => handleFavoritePress(item)}
+          >
+            <FontAwesome name="heart" size={22} color={"#ef233c"} />
+          </TouchableOpacity>
+          <Image style={styles.image} source={{ uri: item.thumbnail }} />
+          <Text style={styles.productTitle}>{item.title}</Text>
+
+          <Text style={styles.price}>{item.price}</Text>
+          <Text style={styles.priceTitle}> TL</Text>
+          <Text style={styles.brand}>{item.brand}</Text>
+        </View>
+      )}
+      keyExtractor={(item) => item.id.toString()}
+    />
+  );
 };
 
 export default Favourites;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   flatList: {
+    alignSelf: "center",
+    left: Metrics.measure(20),
     width: "100%",
     height: "100%",
     top: Metrics.measure(60),
@@ -78,6 +74,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   image: {
     position: "absolute",
@@ -126,7 +131,9 @@ const styles = StyleSheet.create({
     right: Metrics.measure(10),
     width: Metrics.measure(30),
     height: Metrics.measure(30),
+    borderRadius: 50,
 
+    backgroundColor: "lightgrey",
     alignItems: "center",
     zIndex: 1,
     justifyContent: "center",
