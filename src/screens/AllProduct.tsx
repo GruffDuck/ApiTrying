@@ -13,6 +13,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { ProductListProps, Product } from "../component/Types/Type";
 import { Animated } from "react-native";
 
+
 const AllProduct = (props: ProductListProps) => {
   const { productInfo, products } = useProducts();
   const { favoriteProducts = [], setFavoriteProducts } = props;

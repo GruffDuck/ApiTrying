@@ -12,6 +12,7 @@ import { Metrics } from "../../Metrics";
 import { FontAwesome } from "@expo/vector-icons";
 import { all } from "axios";
 import { ProductListProps, Product } from "../component/Types/Type";
+import Lottie from "lottie-react-native";
 
 const Favourites = (props: ProductListProps) => {
   const { favoriteProducts = [], setFavoriteProducts } = props;
@@ -41,7 +42,16 @@ const Favourites = (props: ProductListProps) => {
             style={styles.fav}
             onPress={() => handleFavoritePress(item)}
           >
-            <FontAwesome name="heart" size={22} color={"#ef233c"} />
+            <Lottie
+            style={{width:Metrics.measure(50),height:Metrics.measure(50)}}
+              source={require("../../assets/heart.json")}
+              autoPlay={false}
+              loop={false}
+              ref={(animation) => {
+                animation?.play(30,60);
+                
+              }}
+            />
           </TouchableOpacity>
           <Image style={styles.image} source={{ uri: item.thumbnail }} />
           <Text style={styles.productTitle}>{item.title}</Text>
