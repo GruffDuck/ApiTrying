@@ -18,45 +18,52 @@ type Product = {
   brand: string;
   thumbnail: string;
 };
+
 type ProductListProps = {
   allProducts: Product[];
-  favoriteProducts: Product[];
+  favoriteProducts?: Product[];
+  setFavoriteProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
+  setAllProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
 };
 
 const AllProduct = (props: ProductListProps) => {
   const { productInfo, products } = useProducts();
-  const [fav, setFav] = useState<Product[]>([]);
+  const { favoriteProducts = [], setFavoriteProducts } = props;
+  const [allProducts, setAllProducts] = useState<Product[]>(productInfo);
+  console.log(productInfo);
+  const isFavorite = (product: Product) => {
+    return favoriteProducts.some((fav) => fav.id === product.id);
+  };
 
-  const addToFavorites = (item: Product) => {
-    if (!fav.some((favItem) => favItem.id === item.id)) {
-      setFav([...fav, item]);
+  const handleFavoritePress = (product: Product) => {
+    const updatedFavorites = isFavorite(product)
+      ? favoriteProducts.filter((fav) => fav.id !== product.id)
+      : [...favoriteProducts, product];
+
+    if (setFavoriteProducts) {
+      setFavoriteProducts(updatedFavorites);
     }
   };
 
-  const isFavorite = (id: number) => {
-    return fav.some((favItem) => favItem.id === id);
-  };
-  console.log(fav);
   return (
     <FlatList
       style={styles.flatList}
       showsVerticalScrollIndicator={false}
-      data={productInfo}
+      data={allProducts}
       renderItem={({ item }) => (
         <View style={styles.productContainer}>
           <TouchableOpacity
             style={styles.fav}
-            onPress={() => addToFavorites(item)}
+            onPress={() => handleFavoritePress(item)}
           >
             <FontAwesome
               name="heart"
               size={22}
-              color={isFavorite(item.id) ? "#ef233c" : "white"}
+              color={isFavorite(item) ? "red" : "white"}
             />
           </TouchableOpacity>
           <Image style={styles.image} source={{ uri: item.thumbnail }} />
           <Text style={styles.productTitle}>{item.title}</Text>
-
           <Text style={styles.price}>{item.price}</Text>
           <Text style={styles.priceTitle}> TL</Text>
           <Text style={styles.brand}>{item.brand}</Text>

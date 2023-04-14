@@ -6,7 +6,14 @@ import React, { useState } from "react";
 import AllProduct from "./src/screens/AllProduct";
 
 import Favourites, { Product } from "./src/screens/Favourites";
-export default function App() {
+
+type ProductListProps = {
+  allProducts: Product[];
+  favoriteProducts?: Product[];
+  setFavoriteProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
+  setAllProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
+};
+export default function App(props: ProductListProps) {
   const [isProduct, setIsProduct] = useState(true);
 
   const handleProduct = () => {
@@ -40,7 +47,11 @@ export default function App() {
         onPress={() => handleProduct()}
       />
 
-      {isProduct ? <AllProduct /> : <Favourites />}
+      <AllProduct
+        allProducts={props.allProducts}
+        favoriteProducts={props.favoriteProducts}
+      
+      />
       <StatusBar style="auto" />
     </SafeAreaView>
   );
