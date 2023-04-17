@@ -7,6 +7,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Products from "./Products";
 import Details from "./Details";
 import { Product } from "../component/Types/Type";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import DEneme from "../../DEneme";
 import useProducts from "../Hooks/useProducts";
@@ -21,8 +23,24 @@ const Tabs = () => {
         headerShown: false,
       }}
     >
-      <Tab.Screen name="Categories" component={Categories} />
-      <Tab.Screen name="Products" component={Products} />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <MaterialIcons name="category" size={22} color={"lightblue"} />
+          ),
+        }}
+        name="Categories"
+        component={Categories}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <Feather name="shopping-bag" size={22} color="lightblue" />
+          ),
+        }}
+        name="Products"
+        component={Products}
+      />
     </Tab.Navigator>
   );
 };
