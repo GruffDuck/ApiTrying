@@ -13,8 +13,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import { all } from "axios";
 import { ProductListProps, Product } from "../component/Types/Type";
 import Lottie from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Favourites = (props: ProductListProps) => {
+  const navigation = useNavigation();
   const { favoriteProducts = [], setFavoriteProducts } = props;
   const isFavorite = (product: Product) => {
     return favoriteProducts.some((fav) => fav.id === product.id);
@@ -43,22 +45,29 @@ const Favourites = (props: ProductListProps) => {
             onPress={() => handleFavoritePress(item)}
           >
             <Lottie
-            style={{width:Metrics.measure(50),height:Metrics.measure(50)}}
+              style={{
+                width: Metrics.measure(50),
+                height: Metrics.measure(50),
+              }}
               source={require("../../assets/heart.json")}
               autoPlay={false}
               loop={false}
               ref={(animation) => {
-                animation?.play(30,60);
-                
+                animation?.play(30, 60);
               }}
             />
           </TouchableOpacity>
-          <Image style={styles.image} source={{ uri: item.thumbnail }} />
-          <Text style={styles.productTitle}>{item.title}</Text>
+          <TouchableOpacity
+            style={styles.productContainer}
+            onPress={() => navigation.navigate("Details", { product: item })}
+          >
+            <Image style={styles.image} source={{ uri: item.thumbnail }} />
+            <Text style={styles.productTitle}>{item.title}</Text>
 
-          <Text style={styles.price}>{item.price}</Text>
-          <Text style={styles.priceTitle}> TL</Text>
-          <Text style={styles.brand}>{item.brand}</Text>
+            <Text style={styles.price}>{item.price}</Text>
+            <Text style={styles.priceTitle}> TL</Text>
+            <Text style={styles.brand}>{item.brand}</Text>
+          </TouchableOpacity>
         </View>
       )}
       keyExtractor={(item) => item.id.toString()}

@@ -1,10 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-
-const Head = () => {
+type Props = {
+  text: string;
+};
+const Head = (props:Props) => {
+  const { text } = props;
   return (
     <View style={styles.headContainer}>
-      <Text style={styles.headerTxt}>Ürünler</Text>
+      <Text style={styles.headerTxt}>{text}</Text>
     </View>
   );
 };

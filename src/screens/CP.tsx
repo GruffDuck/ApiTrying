@@ -17,8 +17,11 @@ import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "./Tabs";
 
-const AllProduct = (props: ProductListProps) => {
-  const navigation = useNavigation();
+const CP = (
+  propss: StackScreenProps<RootStackParamList, "CategoriedProduct">,
+  props: ProductListProps
+) => {
+  const items = propss.route.params.name;
   const [heartSize] = useState(new Animated.Value(1));
   const { productInfo } = useProducts();
   const { favoriteProducts = [], setFavoriteProducts } = props;
@@ -27,6 +30,7 @@ const AllProduct = (props: ProductListProps) => {
     setAllProducts(productInfo);
   }, [productInfo]);
 
+  console.log(allProducts);
   const isFavorite = (product: Product) => {
     return favoriteProducts.some((fav) => fav.id === product.id);
   };
@@ -44,32 +48,12 @@ const AllProduct = (props: ProductListProps) => {
   const RenderProduct = (item: Product) => {
     return (
       <View style={styles.productContainer}>
-        <TouchableOpacity
-          style={styles.fav}
-          onPress={() => handleFavoritePress(item)}
-        >
-          <Animated.View style={{ transform: [{ scale: heartSize }] }}>
-            <Lottie
-              style={{
-                width: Metrics.measure(50),
-                height: Metrics.measure(50),
-              }}
-              source={require("../../assets/heart.json")}
-              autoPlay={false}
-              loop={false}
-              ref={(animation) => {
-                if (isFavorite(item)) {
-                  animation?.play(30, 60);
-                } else {
-                  animation?.play(20, 20);
-                }
-              }}
-            />
-          </Animated.View>
-        </TouchableOpacity>
+       
         <TouchableOpacity
           style={styles.productContainer}
-          onPress={() => navigation.navigate("Details", { product: item })}
+          onPress={() =>
+            propss.navigation.navigate("Details", { product: item })
+          }
         >
           <Image style={styles.image} source={{ uri: item.thumbnail }} />
           <Text style={styles.productTitle}>{item.title}</Text>
@@ -85,7 +69,7 @@ const AllProduct = (props: ProductListProps) => {
     <FlatList
       style={styles.flatList}
       showsVerticalScrollIndicator={false}
-      data={allProducts}
+      data={allProducts.filter((item) => item.category === items)}
       renderItem={({ item }) => (
         <RenderProduct
           id={item.id}
@@ -104,7 +88,7 @@ const AllProduct = (props: ProductListProps) => {
   );
 };
 
-export default AllProduct;
+export default CP;
 const styles = StyleSheet.create({
   flatList: {
     alignSelf: "center",

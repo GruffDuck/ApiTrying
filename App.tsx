@@ -1,99 +1,25 @@
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import Head from "./src/component/Head";
-import CustomButton from "./src/component/CustomButton";
-import React, { useState } from "react";
-import AllProduct from "./src/screens/AllProduct";
-
-import Favourites from "./src/screens/Favourites";
-import { Product } from "./src/component/Types/Type";
-
-export default function App() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const [isProduct, setIsProduct] = useState(true);
-
-  const handleProduct = () => {
-    setIsProduct(!isProduct);
-  };
+import { View, Text } from "react-native";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Tabs from "./src/screens/Tabs";
+import CP from "./src/screens/CP";
+import Details from "./src/screens/Details";
+const stack = createStackNavigator();
+const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <Head />
-      <CustomButton
-        style={[
-          styles.allBtn,
-          { backgroundColor: isProduct ? "#3E22EA" : "white" },
-        ]}
-        title="Tümünü Göster"
-        titleStyle={[
-          styles.titleStyle,
-          { color: isProduct ? "white" : "black" },
-        ]}
-        onPress={() => handleProduct()}
-      />
-      <CustomButton
-        style={[
-          styles.favouriteBtn,
-          { backgroundColor: !isProduct ? "#3E22EA" : "white" },
-        ]}
-        title="Favorileri Göster"
-        titleStyle={[
-          styles.titleStyle,
-          { color: !isProduct ? "white" : "black" },
-        ]}
-        onPress={() => handleProduct()}
-      />
-
-      {isProduct ? (
-        <AllProduct
-          allProducts={allProducts}
-          setAllProducts={setAllProducts}
-          favoriteProducts={favoriteProducts}
-          setFavoriteProducts={setFavoriteProducts}
-        />
-      ) : (
-        <Favourites
-          allProducts={allProducts}
-          setAllProducts={setAllProducts}
-          favoriteProducts={favoriteProducts}
-          setFavoriteProducts={setFavoriteProducts}
-        />
-      )}
-      <StatusBar style="auto" />
-    </SafeAreaView>
+    <NavigationContainer>
+      <stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <stack.Screen name="Tabs" component={Tabs} />
+        <stack.Screen name="CategoriedProduct" component={CP} />
+        <stack.Screen name="Details" component={Details} />
+      </stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#E7EAED",
-    alignItems: "center",
-  },
-  allBtn: {
-    position: "absolute",
-    width: "40%",
-    height: 35,
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopLeftRadius: 9,
-    borderBottomLeftRadius: 9,
-    top: 100,
-    left: 42,
-  },
-  favouriteBtn: {
-    position: "absolute",
-    width: "40%",
-    height: 35,
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopRightRadius: 9,
-    borderBottomRightRadius: 9,
-    top: 100,
-    right: 42,
-  },
-  titleStyle: {
-    fontSize: 15,
-    fontWeight: "400",
-  },
-});
+export default App;
